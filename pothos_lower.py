@@ -1,34 +1,23 @@
 #!/usr/bin/env python
-
 import smbus2
+import time
 
-# Define the I2C bus number and Arduino address
-i2c_bus = 1  # Use 1 for Raspberry Pi 2/3, 0 for Raspberry Pi 1
-arduino_address = 0x12  # Use the Arduino's I2C address
+# Define the I2C address of the Arduino Nano
+arduino_address = 8
 
 # Create an I2C bus object
-bus = smbus2.SMBus(i2c_bus)
+bus = smbus2.SMBus(1)  # 1 indicates /dev/i2c-1, for Raspberry Pi 2/3
 
-# Define the sensor you want to read (1 for pothos_lower, 2 for pothos_upper, 3 for palm)
-sensor_number = 1
+# Request data from the pothos_lower sensor
+bus.write_byte(arduino_address, 0)
 
-try:
-    # Request data from the Arduino
-    bus.write_byte(arduino_address, sensor_number)
+# Wait for a short moment to allow the Arduino to respond
+time.sleep(0.1)
 
-    # Read the moisture value (as a single byte)
-    moisture_value = bus.read_byte(arduino_address)
+# Read the response (one byte)
+data = bus.read_byte(arduino_address)
 
-    # Normalize the moisture value to a range of 0-100
-    normalized_moisture = int((moisture_value / 1023.0) * 100.0)
+# Convert the received data to a float with one decimal place
+moisture_percent = float(data) / 10.0
 
-    # Print the normalized moisture value as an integer
-    print(normalized_moisture)
-
-except KeyboardInterrupt:
-    pass
-except Exception as e:
-    print("Error:", e)
-
-finally:
-    bus.close()
+print(moisture_percent)
