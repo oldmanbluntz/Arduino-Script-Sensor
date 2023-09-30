@@ -14,10 +14,10 @@ bus.write_byte(arduino_address, 0)
 # Wait for a short moment to allow the Arduino to respond
 time.sleep(0.1)
 
-# Read the response (one byte)
-data = bus.read_byte(arduino_address)
+# Read the response (two bytes)
+data = bus.read_i2c_block_data(arduino_address, 0, 2)
 
-# Convert the received data to a float with one decimal place
-moisture_percent = float(data) / 10.0
+# Combine the two bytes into an integer
+moisture_percent = (data[0] << 8) | data[1]
 
 print(moisture_percent)
