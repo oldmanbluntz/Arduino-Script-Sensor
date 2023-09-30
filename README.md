@@ -5,3 +5,5 @@ https://theyosh.github.io/TerrariumPI/
 
 It's using capacitive moisture sensors, they have the NE555 timer chip on them, 28k is the manufacture date code on the NE555 and they work fine with an arduino, just the same as the TLC555 chip based capacitive sensors.
 It all works fine. Feel free to use it.
+
+The code uses structured bytes to send the data from the arduino when the Raspberry Pi requests the data. It is connected and communicates over I2C.
